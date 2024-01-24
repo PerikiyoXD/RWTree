@@ -1,3 +1,4 @@
+![Discord](https://img.shields.io/discord/1199799302780883087?style=for-the-badge&label=DISCORD&color=%235865F2)
 # RWTree
 
 RWTree is a specialized application crafted for visualizing the internal structure of RenderWare binary streams.
