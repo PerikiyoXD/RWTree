@@ -1,0 +1,51 @@
+﻿<Window x:Class="RWTree.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Drop="Window_Drop">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.Column="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Open" Click="btnOpen_Click" />
+                <MenuItem Header="Save" Click="btnSave_Click" />
+                <MenuItem Header="Add" Click="btnAdd_Click" />
+                <MenuItem Header="Delete" Click="btnDelete_Click" />
+                <MenuItem Header="Edit" Click="btnEdit_Click" />
+            </MenuItem>
+        </Menu>
+        <!-- <ToolBar Height="30" VerticalAlignment="Top" Drop="Window_Drop" Grid.Row="0" Grid.Column="0"> -->
+        <!--     <Button Name="btnOpen" Click="btnOpen_Click">Open</Button> -->
+        <!--     <Button Name="btnSave" Click="btnSave_Click">Save</Button> -->
+        <!--     <Button Name="btnAdd" Click="btnAdd_Click">Add</Button> -->
+        <!--     <Button Name="btnDelete" Click="btnDelete_Click">Delete</Button> -->
+        <!--     <Button Name="btnEdit" Click="btnEdit_Click">Edit</Button> -->
+        <!-- </ToolBar> -->
+        <Grid Drop="Window_Drop" Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TreeView Name="NodeTree" Grid.Column="0" Grid.Row="0" AllowDrop="True" Drop="Window_Drop">
+                <TreeView.Resources>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </TreeView.Resources>
+            </TreeView>
+            <TextBox Name="txtNode" Grid.Column="0" Grid.Row="1" />
+        </Grid>
+    </Grid>
+
+</Window>
