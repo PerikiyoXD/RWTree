@@ -9,4 +9,8 @@
         <ApplicationIcon>rwtree.ico</ApplicationIcon>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Assets\" />
+    </ItemGroup>
+
 </Project>

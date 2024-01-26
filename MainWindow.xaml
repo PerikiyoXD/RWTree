@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:rwTree="clr-namespace:RWTree"
         mc:Ignorable="d"
-        Title="RWTree" Height="450" Width="800" Drop="Window_Drop">
+        Title="RWTree" Height="450" Width="800" Drop="WindowDrop">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,37 +16,68 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="File">
-                <MenuItem Header="Open" Click="btnOpen_Click" />
-                <MenuItem Header="Save" Click="btnSave_Click" />
-                <MenuItem Header="Add" Click="btnAdd_Click" />
-                <MenuItem Header="Delete" Click="btnDelete_Click" />
-                <MenuItem Header="Edit" Click="btnEdit_Click" />
+                <MenuItem Header="Open" Click="OpenClick" />
+                <MenuItem Header="Close" Click="CloseClick" />
+                <MenuItem Header="Exit" Click="ExitClick" />
             </MenuItem>
         </Menu>
-        <!-- <ToolBar Height="30" VerticalAlignment="Top" Drop="Window_Drop" Grid.Row="0" Grid.Column="0"> -->
-        <!--     <Button Name="btnOpen" Click="btnOpen_Click">Open</Button> -->
-        <!--     <Button Name="btnSave" Click="btnSave_Click">Save</Button> -->
-        <!--     <Button Name="btnAdd" Click="btnAdd_Click">Add</Button> -->
-        <!--     <Button Name="btnDelete" Click="btnDelete_Click">Delete</Button> -->
-        <!--     <Button Name="btnEdit" Click="btnEdit_Click">Edit</Button> -->
-        <!-- </ToolBar> -->
-        <Grid Drop="Window_Drop" Grid.Row="1" Grid.Column="0">
+        <Grid Grid.Row="1" Grid.Column="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TreeView Name="NodeTree" Grid.Column="0" Grid.Row="0" AllowDrop="True" Drop="Window_Drop">
+            <TreeView Name="NodeTree" Grid.Column="0" Grid.Row="0" AllowDrop="True" Drop="WindowDrop" SelectedItemChanged="NodeTree_SelectedItemChanged">
                 <TreeView.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightBlue" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="LightBlue" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+                    
                     <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsExpanded" Value="True" />
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Margin="2" Source="{Binding Icon}" />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Style.Triggers>
+                            <!-- Selected and has focus -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="#7DA2CE"/>
+                            </Trigger>
+                            <!-- Mouse over -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                            <GradientStop Color="#FFFAFBFD" Offset="0"/>
+                                            <GradientStop Color="#FFEBF3FD" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderBrush" Value="#B8D6FB"/>
+                            </Trigger>
+                            <!-- Selected but does not have the focus -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsSelectionActive" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="#D9D9D9"/>
+                            </MultiTrigger>
+                        </Style.Triggers>
                     </Style>
                 </TreeView.Resources>
             </TreeView>
-            <TextBox Name="txtNode" Grid.Column="0" Grid.Row="1" />
+            <TextBox Name="txtNode" Grid.Column="1" Grid.Row="0" />
         </Grid>
     </Grid>
-
 </Window>

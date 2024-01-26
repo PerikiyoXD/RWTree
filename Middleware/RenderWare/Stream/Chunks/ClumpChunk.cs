@@ -1,19 +1,16 @@
 using System.IO;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace RWTree.Middleware.RenderWare.Stream.Chunks;
 
-public class ClumpChunk : Chunk
+public class ClumpChunk(ChunkHeader header) : Chunk(null, header)
 {
     public List<AtomicChunk> Atomics;
     public ClumpStructChunk ClumpStruct;
     public ExtensionChunk Extension;
     public FrameListChunk FrameList;
     public GeometryListChunk GeometryList;
-
-    public ClumpChunk(ChunkHeader header) : base(null, header)
-    {
-    }
 
     // Read clump chunk data
     // Clumps have a Struct, a List of Frames, a Geometry List, and an Extension
@@ -74,6 +71,8 @@ public class ClumpChunk : Chunk
     public new TreeViewItem ToTreeViewItem()
     {
         var chunkItem = base.ToTreeViewItem();
+        
+        // Set image
 
         chunkItem.Items.Add(ClumpStruct.ToTreeViewItem());
         chunkItem.Items.Add(FrameList.ToTreeViewItem());

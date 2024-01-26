@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.Win32;
 using RWTree.Middleware.RenderWare;
 
@@ -10,12 +11,15 @@ namespace RWTree;
 /// </summary>
 public partial class MainWindow : Window
 {
+    public Dff? Dff { get; set; }
+
     public MainWindow()
     {
         InitializeComponent();
+        DataContext = new TreeViewModel();
     }
-    
-    public void Window_Drop(object sender, DragEventArgs e)
+
+    public void WindowDrop(object sender, DragEventArgs e)
     {
         // Check if file is dragged
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -26,31 +30,32 @@ public partial class MainWindow : Window
             {
                 // Get file path
                 string filePath = files[0];
-                
+
                 // Call load
                 LoadFile(filePath);
             }
         }
+
         // Mark event as handled
         e.Handled = true;
     }
-    
+
     // On drag on window
-    public void Window_DragOver(object sender, DragEventArgs e)
+    private void Window_DragOver(object sender, DragEventArgs e)
     {
         // Check if file is dragged
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             // Allow copy
             e.Effects = DragDropEffects.Copy;
-            
+
             // Get file path
             object? dropData = e.Data.GetData(DataFormats.FileDrop);
             if (dropData is string[] files)
             {
                 // Get file path
                 string filePath = files[0];
-                
+
                 // Call load
                 LoadFile(filePath);
             }
@@ -60,66 +65,73 @@ public partial class MainWindow : Window
             // Deny drop
             e.Effects = DragDropEffects.None;
         }
+
         // Mark event as handled
         e.Handled = true;
     }
-    
+
     // Load file
-    public void LoadFile(string filePath)
+    private void LoadFile(string filePath)
     {
         Console.WriteLine($"MainWindow.LoadFile: Loading file: '{filePath}'");
-        
+
         DffReader dffReader = new();
-        
+
         dffReader.Read(filePath);
+
+        Dff = dffReader.Dff;
         
-        // Get tree items from dffReader
-        var tree = dffReader.Dff.ToTreeViewItem();
-        
-        // Set tree
+        var tree = Dff.ToTreeViewItem();
+
         this.NodeTree.ItemsSource = tree.Items;
-        
-        // Debugger.Break();
-        // Set tree
-        // this.NodeTree.ItemsSource = tree.Nodes; // NOT YET
     }
 
-    private void btnOpen_Click(object sender, RoutedEventArgs e)
+    private void OpenClick(object sender, RoutedEventArgs e)
     {
-        // Trigger open file dialog
         OpenFileDialog openFileDialog = new() { Filter = "RenderWare DFF Files (*.dff)|*.dff", FilterIndex = 1, Multiselect = false };
 
-        // Show dialog
         bool? result = openFileDialog.ShowDialog();
-        
-        // Check if result is true
+
         if (result == true)
         {
-            // Get file path
             string filePath = openFileDialog.FileName;
-            
-            // Call load
+
             LoadFile(filePath);
         }
     }
-
-    private void btnSave_Click(object sender, RoutedEventArgs e)
+    
+    private void ExitClick(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        // Clear tree
+        this.NodeTree.ItemsSource = null;
+            
+        // Cleanup
+        Dff = null;
+        
+        Application.Current.Shutdown();
     }
 
-    private void btnAdd_Click(object sender, RoutedEventArgs e)
+    private void CloseClick(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        // Clear tree
+        this.NodeTree.ItemsSource = null;
+        
+        // Cleanup
+        Dff = null;
     }
 
-    private void btnDelete_Click(object sender, RoutedEventArgs e)
+    private void NodeTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"MainWindow.NodeTree_SelectedItemChanged: Selected item changed to: '{e.NewValue}'");
+        
+        if (e.OldValue is TreeViewItem oldItem)
+            oldItem.Background = null;
+        
+        if (e.NewValue is TreeViewItem newItem)
+            newItem.Background = Brushes.LightBlue;
     }
+}
 
-    private void btnEdit_Click(object sender, RoutedEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
+public class StreamChunkTree
+{
 }
